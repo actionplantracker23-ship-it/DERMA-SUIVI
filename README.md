@@ -16,8 +16,8 @@ Application installable sur téléphone (Android, iPhone) et ordinateur, qui rem
 - **contrôles et consentement** : date du prochain contrôle par motif, liste « À revoir » à l'accueil ; consentement
   du patient (photos, analyse IA, enseignement) enregistré avec sa date ;
 - **analyse IA (facultative)** : description structurée d'une photo (lit de la plaie, ABCDE, dermoscopie…),
-  hypothèses à discuter, signes d'alerte, et analyse de l'évolution entre plusieurs photos, avec l'IA Claude
-  d'Anthropic ; voir « Analyse IA » ci-dessous ;
+  hypothèses à discuter, signes d'alerte, et analyse de l'évolution entre plusieurs photos, au choix avec
+  Claude (Anthropic) ou Gemini (Google) ; voir « Analyse IA » ci-dessous ;
 - **plusieurs motifs de consultation par patient** : s'il revient pour autre chose (ex. un eczéma après
   un ulcère), on crée un nouveau motif dans le même dossier ; chaque motif a ses photos, son J0, ses notes et
   son statut (en cours / guéri) ;
@@ -45,18 +45,27 @@ Police : EB Garamond (licence libre SIL OFL), incluse dans `fonts/` pour fonctio
 
 ## Analyse IA
 
-Désactivée par défaut. Chaque médecin saisit sa propre clé API Anthropic dans Réglages → Analyse IA
-(elle reste sur l'appareil). Modèle utilisé : Claude Opus 5.5, réponse en JSON structuré ; si le modèle
-décline une demande, l'API la relance automatiquement sur le modèle de repli recommandé (`fallbacks: "default"`).
+Désactivée par défaut. Dans Réglages → Analyse IA, chaque médecin choisit son moteur et saisit sa propre clé API
+(elle reste sur l'appareil, pour son espace) :
+
+- **Claude (Anthropic)** : modèle Claude Opus 5.5, réponse en JSON structuré ; si le modèle décline une demande,
+  l'API la relance automatiquement sur le modèle de repli recommandé (`fallbacks: "default"`).
+- **Gemini (Google)** : clé créée sur aistudio.google.com ; modèle `gemini-flash-latest` par défaut, ou un autre
+  modèle choisi dans la liste des modèles disponibles pour la clé ; réponse en JSON structuré (`responseJsonSchema`).
+  L'API Gemini n'est pas open source (les modèles ouverts de Google s'appellent Gemma). **Avec la clé gratuite,
+  Google peut utiliser les contenus envoyés pour améliorer ses produits et les faire relire par des personnes** :
+  pour de vraies photos de patients, utiliser une clé d'un projet avec facturation activée.
+
+Pour les deux :
 
 - Seuls l'image et le contexte clinique (motif, zone, type de photo, jour de suivi, mesures) sont envoyés :
   jamais le nom, le n° de dossier ni les notes générales.
 - L'application demande le consentement du patient et l'enregistre dans son dossier.
-- La photo quitte l'appareil pour les serveurs d'Anthropic (États-Unis), qui ne sont pas certifiés HDS :
-  à valider avec votre DPO avant un usage courant.
+- Ni Anthropic ni Google ne sont certifiés HDS pour ces services : à valider avec votre DPO avant un usage courant.
 - Le résultat est une aide à l'analyse, jamais un diagnostic.
 
-Le SDK officiel (`@anthropic-ai/sdk` 1.1.0) est intégré dans `vendor/` (voir `vendor/README.md`).
+Les SDK officiels (`@anthropic-ai/sdk` 1.1.0, `@google/genai` 2.30.0) sont intégrés dans `vendor/`
+(voir `vendor/README.md`).
 
 ## Installer
 
