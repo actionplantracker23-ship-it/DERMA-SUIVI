@@ -5,6 +5,19 @@ Application installable sur téléphone (Android, iPhone) et ordinateur, qui rem
 
 - **un espace par médecin** : au lancement, chacun choisit son espace (« Dr Martin »…) et ne voit que
   ses patients ; un code personnel peut le protéger (verrouillage automatique après 5 min hors de l'app) ;
+- **photo guidée** : la caméra s'ouvre avec la photo précédente en transparence (et une grille) pour reprendre
+  le même cadrage, la même distance et le même angle ; les comparaisons deviennent fiables ;
+- **métadonnées** lues dans chaque photo, importée ou prise : date et heure de prise de vue (EXIF), appareil,
+  objectif, réglages, résolution, fichier, GPS ; visibles dans « Informations de la photo » ;
+- **annotations et mesures** : flèches, cercles, dessin, texte ; étalonnage sur une règle visible dans la photo,
+  puis mesure de longueurs (mm) et de surfaces (cm²) ; courbe d'évolution de la surface pour chaque motif ;
+- **outils d'examen** : loupe (molette, double-clic, pincement), luminosité, contraste, saturation, type de photo
+  (clinique, dermoscopie, vue d'ensemble) ;
+- **contrôles et consentement** : date du prochain contrôle par motif, liste « À revoir » à l'accueil ; consentement
+  du patient (photos, analyse IA, enseignement) enregistré avec sa date ;
+- **analyse IA (facultative)** : description structurée d'une photo (lit de la plaie, ABCDE, dermoscopie…),
+  hypothèses à discuter, signes d'alerte, et analyse de l'évolution entre plusieurs photos, avec l'IA Claude
+  d'Anthropic ; voir « Analyse IA » ci-dessous ;
 - **plusieurs motifs de consultation par patient** : s'il revient pour autre chose (ex. un eczéma après
   un ulcère), on crée un nouveau motif dans le même dossier ; chaque motif a ses photos, son J0, ses notes et
   son statut (en cours / guéri) ;
@@ -30,6 +43,21 @@ chiffrement des photos. Chaque médecin peut aussi simplement installer l'app su
 
 Police : EB Garamond (licence libre SIL OFL), incluse dans `fonts/` pour fonctionner hors ligne.
 
+## Analyse IA
+
+Désactivée par défaut. Chaque médecin saisit sa propre clé API Anthropic dans Réglages → Analyse IA
+(elle reste sur l'appareil). Modèle utilisé : Claude Opus 5.5, réponse en JSON structuré ; si le modèle
+décline une demande, l'API la relance automatiquement sur le modèle de repli recommandé (`fallbacks: "default"`).
+
+- Seuls l'image et le contexte clinique (motif, zone, type de photo, jour de suivi, mesures) sont envoyés :
+  jamais le nom, le n° de dossier ni les notes générales.
+- L'application demande le consentement du patient et l'enregistre dans son dossier.
+- La photo quitte l'appareil pour les serveurs d'Anthropic (États-Unis), qui ne sont pas certifiés HDS :
+  à valider avec votre DPO avant un usage courant.
+- Le résultat est une aide à l'analyse, jamais un diagnostic.
+
+Le SDK officiel (`@anthropic-ai/sdk` 1.1.0) est intégré dans `vendor/` (voir `vendor/README.md`).
+
 ## Installer
 
 Adresse : `https://actionplantracker23-ship-it.github.io/Derma/`
@@ -49,5 +77,6 @@ Aucune dépendance ni compilation : HTML, CSS et JavaScript.
 python3 -m http.server 8000   # puis http://localhost:8000
 ```
 
-`index.html` (page), `app.js` (logique, base IndexedDB), `style.css`, `sw.js` (hors ligne),
+`index.html` (page), `app.js` (logique, base IndexedDB), `meta.js` (métadonnées EXIF), `annot.js`
+(annotations et mesures), `camera.js` (photo guidée), `ai.js` (analyse IA), `style.css`, `sw.js` (hors ligne),
 `manifest.webmanifest` et `icons/` (installation).
