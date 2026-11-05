@@ -60,7 +60,7 @@ Le SDK officiel (`@anthropic-ai/sdk` 1.1.0) est intégré dans `vendor/` (voir `
 
 ## Installer
 
-Adresse : `https://actionplantracker23-ship-it.github.io/Derma/`
+Adresse : `https://actionplantracker23-ship-it.github.io/DERMA-SUIVI/`
 
 Chaque push sur `main` republie l'application (`.github/workflows/pages.yml`).
 Première fois : **Settings → Pages → Source : GitHub Actions**.
